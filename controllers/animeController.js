@@ -1,7 +1,16 @@
-const getAllAnimes = (req, res) => {
-  res.send("All Animes");
+const { fetchAllAnimes, fetchSingleAnime } = require("../db/animeQueries");
+
+const getAllAnimes = async (req, res) => {
+  try {
+    const animes = await fetchAllAnimes();
+    res.render("anime/anime", { title: "Anime", animes: animes });
+  } catch (error) {
+    console.log(error);
+  }
 };
-const getSingleAnime = (req, res) => {
+const getSingleAnime = async (req, res) => {
+  const { id } = req.params;
+  const anime = await fetchSingleAnime(id);
   res.send("Single Anime");
 };
 const addAnimeGet = (req, res) => {
