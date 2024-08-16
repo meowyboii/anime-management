@@ -13,7 +13,6 @@ const fetchAllAnimes = async () => {
     );
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -25,9 +24,32 @@ const fetchSingleAnime = async (animeId) => {
     ]);
     return rows[0];
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
-module.exports = { fetchAllAnimes, fetchSingleAnime };
+const createAnime = async (
+  title,
+  description,
+  release_date,
+  rating,
+  categories
+) => {
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO animes (title, description, release_date, rating) 
+      VALUES ($1, $2, $3, $4) RETURNING *;`,
+      [title, description, release_date, rating]
+    );
+    const categoryValues = categories
+      .map((categoryId) => `(${rows[0].id}, ${categoryId})`)
+      .join(", ");
+    await pool.query(`INSERT INTO anime_categories (anime_id, category_id)
+      VALUES ${categoryValues}; `);
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { fetchAllAnimes, fetchSingleAnime, createAnime };

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <form action="/anime/new" method="post">
+      <label for="title">Anime Title:</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        placeholder="Anime Title"
+        required
+      />
+      <label for="categories">Select Categories:</label>
+      <select id="categories" name="categories" multiple>
+        <% categories.forEach(category => { %>
+        <option value="<%= category.id %>"><%= category.name %></option>
+        <% }) %>
+      </select>
+      <label for="description">Description:</label>
+      <input
+        type="text"
+        name="description"
+        id="description"
+        placeholder="Description"
+        required
+      />
+      <label for="release_date">Release Date:</label>
+      <input type="date" name="release_date" id="release_date" required />
+      <label for="rating">Rating (1-5):</label>
+      <input
+        type="number"
+        name="rating"
+        id="rating"
+        placeholder="1-5"
+        min="1"
+        max="5"
+        required
+      />
+      <button type="submit">Add Anime</button>
+    </form>
+  </body>
+</html>

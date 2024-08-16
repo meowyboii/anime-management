@@ -1,4 +1,10 @@
-const { fetchAllAnimes, fetchSingleAnime } = require("../db/animeQueries");
+const {
+  fetchAllAnimes,
+  fetchSingleAnime,
+  createAnime,
+} = require("../db/animeQueries");
+
+const { fetchAllCategories } = require("../db/categoryQueries");
 
 const getAllAnimes = async (req, res) => {
   try {
@@ -13,11 +19,32 @@ const getSingleAnime = async (req, res) => {
   const anime = await fetchSingleAnime(id);
   res.send("Single Anime");
 };
-const addAnimeGet = (req, res) => {
-  res.send("Add Anime Form");
+const addAnimeGet = async (req, res) => {
+  try {
+    const categories = await fetchAllCategories();
+    res.render("anime/add-anime", {
+      title: "Add New Anime",
+      categories: categories,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
-const addAnimePost = (req, res) => {
-  res.send("Add New Anime");
+const addAnimePost = async (req, res) => {
+  const { title, description, release_date, rating, categories } = req.body;
+  try {
+    const anime = await createAnime(
+      title,
+      description,
+      release_date,
+      rating,
+      categories
+    );
+    console.log(anime);
+    res.redirect("/anime");
+  } catch (error) {
+    console.log(error);
+  }
 };
 const updateAnime = (req, res) => {
   res.send("Update Anime");
