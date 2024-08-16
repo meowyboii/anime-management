@@ -1,6 +1,6 @@
 const pool = require("./pool");
 
-const getAllAnimes = async () => {
+const fetchAllAnimes = async () => {
   try {
     const { rows } = await pool.query(
       `SELECT animes.* AS anime_title, 
@@ -14,7 +14,20 @@ const getAllAnimes = async () => {
     return rows;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
-module.exports = { getAllAnimes };
+const fetchSingleAnime = async (animeId) => {
+  try {
+    const { rows } = await pool.query(`SELECT * FROM animes WHERE id = $1;`, [
+      animeId,
+    ]);
+    return rows[0];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports = { fetchAllAnimes, fetchSingleAnime };
