@@ -1,3 +1,7 @@
+a {
+  text-decoration: none;
+  color: black;
+}
 label {
   margin-bottom: 5px;
 }
@@ -12,4 +16,22 @@ select {
 button {
   padding: 10px;
   cursor: pointer;
+}
+nav ul {
+  padding: 0;
+}
+nav li {
+  display: inline;
+  margin-right: 10px;
+}
+
+#edit-form {
+  display: none;
+}
+#anime-details {
+  margin-bottom: 15px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
 }

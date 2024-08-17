@@ -45,7 +45,8 @@ const createAnime = async (
   try {
     const { rows } = await pool.query(
       `INSERT INTO animes (title, description, release_date, rating) 
-      VALUES ($1, $2, $3, $4) RETURNING *;`,
+      VALUES ($1, $2, $3, $4) 
+      RETURNING *;`,
       [title, description, release_date, rating]
     );
     const categoryValues = categories
@@ -59,4 +60,57 @@ const createAnime = async (
   }
 };
 
-module.exports = { fetchAllAnimes, fetchSingleAnime, createAnime };
+const updateAnimeById = async (
+  title,
+  description,
+  release_date,
+  rating,
+  categories,
+  animeId
+) => {
+  try {
+    const { rows } = await pool.query(
+      `UPDATE animes
+      SET title = $1, description = $2, release_date = $3, rating = $4
+      WHERE id = $5
+      RETURNING *;`,
+      [title, description, release_date, rating, animeId]
+    );
+    await pool.query(
+      `DELETE FROM anime_categories
+      WHERE anime_id = $1;`,
+      [animeId]
+    );
+    const categoryValues = categories
+      .map((_, index) => `($1, $${index + 2})`)
+      .join(", ");
+    const values = [animeId, ...categories];
+    const addCategoriesQuery = `INSERT INTO anime_categories (anime_id, category_id) 
+                                VALUES ${categoryValues}; `;
+    await pool.query(addCategoriesQuery, values);
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteAnimeById = async (animeId) => {
+  try {
+    const { rows } = await pool.query(
+      `DELETE FROM animes
+      WHERE id = $1 RETURNING *`,
+      [animeId]
+    );
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  fetchAllAnimes,
+  fetchSingleAnime,
+  createAnime,
+  updateAnimeById,
+  deleteAnimeById,
+};

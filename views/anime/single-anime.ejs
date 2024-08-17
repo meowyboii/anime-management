@@ -7,15 +7,87 @@
     <title><%= anime.title %></title>
   </head>
   <body>
-    <h2><%= anime.title %></h2>
-    <strong>Title:</strong> <%= anime.title %><br />
-    <strong>Description:</strong> <%= anime.description %><br />
-    <strong>Release Date:</strong> <%= anime.release_date %><br />
-    <strong>Rating:</strong> <%= anime.rating %><br />
-    <strong>Categories:</strong> <%= anime.categories %> <br />
-    <button type="button">Edit</button>
-    <form action="/delete/<%= anime.id %>" method="post">
-      <button type="submit">Delete</button>
-    </form>
+    <%- include('../partials/navbar.ejs') %>
+    <main>
+      <div id="anime-details">
+        <h2><%= anime.title %></h2>
+        <strong>Description: </strong
+        ><span id="description-text"><%= anime.description %></span><br />
+        <strong>Release Date: </strong
+        ><span id="release-date-text"><%= anime.release_date %></span><br />
+        <strong>Rating: </strong
+        ><span id="rating-text"><%= anime.rating %>/5</span><br />
+        <strong>Categories: </strong
+        ><span id="categories-text"><%= anime.categories %></span><br />
+      </div>
+
+      <div class="actions">
+        <button type="button" id="edit-button">Edit</button>
+        <form action="/anime/<%= anime.id %>/delete" method="post">
+          <button type="submit" id="delete-button">Delete</button>
+        </form>
+      </div>
+
+      <form action="/anime/<%= anime.id %>/edit" method="post" id="edit-form">
+        <label for="title">Anime Title:</label>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Anime Title"
+          required
+        />
+        <label for="categories">Select Categories:</label>
+        <select id="categories" name="categories" multiple required>
+          <% categories.forEach(category => { %>
+          <option value="<%= category.id %>"><%= category.name %></option>
+          <% }) %>
+        </select>
+        <label for="description">Description:</label>
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="Description"
+          required
+        />
+        <label for="release_date">Release Date:</label>
+        <input type="date" name="release_date" id="release_date" required />
+        <label for="rating">Rating (1-5):</label>
+        <input
+          type="number"
+          name="rating"
+          id="rating"
+          placeholder="1-5"
+          min="1"
+          max="5"
+          required
+        />
+        <button type="submit">Update</button>
+        <button type="button" id="cancel-button">Cancel</button>
+      </form>
+    </main>
+
+    <script>
+      document.getElementById("title").value = "<%= anime.title %>";
+      document.getElementById("description").value = "<%= anime.description %>";
+      document.getElementById("release_date").value =
+        "<%= anime.release_date.toISOString().split('T')[0] %>";
+      document.getElementById("rating").value = "<%= anime.rating %>";
+
+      document.getElementById("edit-button").addEventListener("click", () => {
+        document.getElementById("anime-details").style.display = "none";
+        document.getElementById("edit-button").style.display = "none";
+        document.getElementById("delete-button").style.display = "none";
+        document.getElementById("edit-form").style.display = "block";
+      });
+
+      document.getElementById("cancel-button").addEventListener("click", () => {
+        document.getElementById("anime-details").style.display = "block";
+        document.getElementById("edit-button").style.display = "block";
+        document.getElementById("delete-button").style.display = "block";
+        document.getElementById("edit-form").style.display = "none";
+      });
+    </script>
   </body>
 </html>

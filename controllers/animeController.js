@@ -2,6 +2,8 @@ const {
   fetchAllAnimes,
   fetchSingleAnime,
   createAnime,
+  updateAnimeById,
+  deleteAnimeById,
 } = require("../db/animeQueries");
 
 const { fetchAllCategories } = require("../db/categoryQueries");
@@ -18,7 +20,12 @@ const getSingleAnime = async (req, res) => {
   const { id } = req.params;
   try {
     const anime = await fetchSingleAnime(id);
-    res.render("anime/single-anime", { title: anime.title, anime: anime });
+    const categories = await fetchAllCategories();
+    res.render("anime/single-anime", {
+      title: anime.title,
+      anime: anime,
+      categories: categories,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -44,17 +51,42 @@ const addAnimePost = async (req, res) => {
       rating,
       categories
     );
-    console.log(anime);
-    res.redirect("/anime");
+    if (anime) {
+      console.log(anime);
+      res.redirect("/anime");
+    }
   } catch (error) {
     console.log(error);
   }
 };
-const updateAnime = (req, res) => {
-  res.send("Update Anime");
+const updateAnime = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, release_date, rating, categories } = req.body;
+  const updatedAnime = await updateAnimeById(
+    title,
+    description,
+    release_date,
+    rating,
+    categories,
+    id
+  );
+  if (updatedAnime) {
+    console.log(updatedAnime);
+    res.redirect(`/anime/${id}`);
+  }
 };
-const deleteAnime = (req, res) => {
-  res.send("Delete Anime");
+const deleteAnime = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedAnime = await deleteAnimeById(id);
+    if (deletedAnime) {
+      res.redirect("/anime");
+    } else {
+      res.status(404).send("Anime not found");
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = {
