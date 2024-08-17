@@ -19,9 +19,16 @@ const fetchAllAnimes = async () => {
 
 const fetchSingleAnime = async (animeId) => {
   try {
-    const { rows } = await pool.query(`SELECT * FROM animes WHERE id = $1;`, [
-      animeId,
-    ]);
+    const { rows } = await pool.query(
+      `SELECT animes.*, 
+        STRING_AGG(categories.name, ', ') AS categories
+        FROM animes
+        JOIN anime_categories ON animes.id = anime_categories.anime_id
+        JOIN categories ON categories.id = anime_categories.category_id
+        WHERE animes.id = $1
+        GROUP BY animes.id;`,
+      [animeId]
+    );
     return rows[0];
   } catch (error) {
     throw error;

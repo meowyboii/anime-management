@@ -16,8 +16,12 @@ const getAllAnimes = async (req, res) => {
 };
 const getSingleAnime = async (req, res) => {
   const { id } = req.params;
-  const anime = await fetchSingleAnime(id);
-  res.send("Single Anime");
+  try {
+    const anime = await fetchSingleAnime(id);
+    res.render("anime/single-anime", { title: anime.title, anime: anime });
+  } catch (error) {
+    console.log(error);
+  }
 };
 const addAnimeGet = async (req, res) => {
   try {
