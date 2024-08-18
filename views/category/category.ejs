@@ -3,12 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
     <title><%= title %></title>
   </head>
   <body>
-    <body>
-      <%- include('../partials/navbar.ejs') %> <%-
-      include('../partials/category-list.ejs') %>
-    </body>
+    <%- include('../partials/navbar.ejs') %>
+    <section>
+      <h1>Categories</h1>
+      <ul>
+        <% categories.forEach((category) => { %>
+        <li><%= category.name %></li>
+        <% }); %>
+      </ul>
+    </section>
+    <a href="/category/new">Add New <%= title %></a>
   </body>
 </html>
