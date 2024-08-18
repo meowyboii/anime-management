@@ -1,7 +1,4 @@
-const {
-  fetchAllCategories,
-  fetchSingleCategory,
-} = require("../db/categoryQueries");
+const { fetchAllCategories, createCategory } = require("../db/categoryQueries");
 
 const getAllCategories = async (req, res) => {
   try {
@@ -15,9 +12,23 @@ const getAllCategories = async (req, res) => {
   }
 };
 const addCategoryGet = (req, res) => {
-  res.send("Add Category Form");
+  try {
+    res.render("category/add-category", { title: "Add New Category" });
+  } catch (error) {
+    console.log(error);
+  }
 };
-const addCategoryPost = (req, res) => {
+const addCategoryPost = async (req, res) => {
+  const { name } = req.body;
+  try {
+    const category = await createCategory(name);
+    if (category) {
+      res.redirect("/category");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
   res.send("Add New Category");
 };
 const updateCategory = (req, res) => {

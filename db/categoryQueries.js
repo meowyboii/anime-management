@@ -5,22 +5,22 @@ const fetchAllCategories = async () => {
     const { rows } = await pool.query(`SELECT * FROM categories`);
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
-const fetchSingleCategory = async (categoryName) => {
+const createCategory = async (name) => {
   try {
     const { rows } = await pool.query(
-      `SELECT * FROM categories WHERE name = $1;`,
-      [categoryName]
+      `INSERT INTO categories (name)
+      VALUES ($1)
+      RETURNING *;`,
+      [name]
     );
     return rows[0];
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
-module.exports = { fetchAllCategories, fetchSingleCategory };
+module.exports = { fetchAllCategories, createCategory };
