@@ -43,6 +43,9 @@ const createAnime = async (
   categories
 ) => {
   try {
+    if (!Array.isArray(categories)) {
+      categories = [categories];
+    }
     const { rows } = await pool.query(
       `INSERT INTO animes (title, description, release_date, rating) 
       VALUES ($1, $2, $3, $4) 
@@ -50,10 +53,14 @@ const createAnime = async (
       [title, description, release_date, rating]
     );
     const categoryValues = categories
-      .map((categoryId) => `(${rows[0].id}, ${categoryId})`)
+      .map((_, index) => `($1, $${index + 2})`)
       .join(", ");
-    await pool.query(`INSERT INTO anime_categories (anime_id, category_id)
-      VALUES ${categoryValues}; `);
+
+    const values = [rows[0].id, ...categories];
+
+    const addCategoriesQuery = `INSERT INTO anime_categories (anime_id, category_id) 
+                                VALUES ${categoryValues}; `;
+    await pool.query(addCategoriesQuery, values);
     return rows[0];
   } catch (error) {
     throw error;
@@ -69,6 +76,9 @@ const updateAnimeById = async (
   animeId
 ) => {
   try {
+    if (!Array.isArray(categories)) {
+      categories = [categories];
+    }
     const { rows } = await pool.query(
       `UPDATE animes
       SET title = $1, description = $2, release_date = $3, rating = $4
