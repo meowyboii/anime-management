@@ -23,6 +23,21 @@ const createCategory = async (name) => {
   }
 };
 
+const updateCategoryById = async (categoryId, name) => {
+  try {
+    const { rows } = await pool.query(
+      `UPDATE categories
+      SET name = $1
+      WHERE id = $2
+      RETURNING *;`,
+      [name, categoryId]
+    );
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
 const deleteCategoryById = async (categoryId) => {
   try {
     const { rows } = await pool.query(
@@ -37,4 +52,9 @@ const deleteCategoryById = async (categoryId) => {
   }
 };
 
-module.exports = { fetchAllCategories, createCategory, deleteCategoryById };
+module.exports = {
+  fetchAllCategories,
+  createCategory,
+  updateCategoryById,
+  deleteCategoryById,
+};

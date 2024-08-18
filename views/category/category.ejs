@@ -11,17 +11,71 @@
     <section>
       <h1>Categories</h1>
       <ul>
-        <% categories.forEach((category) => { %>
-        <li><%= category.name %></li>
-        <div class="actions">
-          <button type="button" id="edit-button">Edit</button>
-          <form action="/category/<%= category.id %>/delete" method="post">
-            <button type="submit" id="delete-button">Delete</button>
-          </form>
+        <% categories.forEach((category, index) => { %>
+        <div id="category-details<%= index%>">
+          <li><%= category.name %></li>
+          <div class="actions">
+            <button type="button" id="edit-button<%= index%>">Edit</button>
+            <form action="/category/<%= category.id %>/delete" method="post">
+              <button type="submit" id="delete-button<%= index%>">
+                Delete
+              </button>
+            </form>
+          </div>
         </div>
+        <form
+          action="/category/<%= category.id %>/edit"
+          method="post"
+          id="edit-form<%= index%>"
+        >
+          <input
+            type="text"
+            name="name"
+            id="name<%= index%>"
+            placeholder="Category"
+            required
+          />
+          <button type="submit">Update</button>
+          <button type="button" id="cancel-button<%= index%>">Cancel</button>
+        </form>
+        <script>
+          document.getElementById("name<%= index%>").value =
+            "<%= category.name %>";
+          document.getElementById("edit-form<%= index%>").style.display =
+            "none";
+          document
+            .getElementById("edit-button<%= index%>")
+            .addEventListener("click", () => {
+              document.getElementById(
+                "category-details<%= index%>"
+              ).style.display = "none";
+              document.getElementById("edit-button<%= index%>").style.display =
+                "none";
+              document.getElementById(
+                "delete-button<%= index%>"
+              ).style.display = "none";
+              document.getElementById("edit-form<%= index%>").style.display =
+                "block";
+            });
+
+          document
+            .getElementById("cancel-button<%= index%>")
+            .addEventListener("click", () => {
+              document.getElementById(
+                "category-details<%= index%>"
+              ).style.display = "block";
+              document.getElementById("edit-button<%= index%>").style.display =
+                "block";
+              document.getElementById(
+                "delete-button<%= index%>"
+              ).style.display = "block";
+              document.getElementById("edit-form<%= index%>").style.display =
+                "none";
+            });
+        </script>
         <% }); %>
       </ul>
+      <a href="/category/new">Add New <%= title %></a>
     </section>
-    <a href="/category/new">Add New <%= title %></a>
   </body>
 </html>
