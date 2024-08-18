@@ -13,6 +13,12 @@
       <ul>
         <% categories.forEach((category) => { %>
         <li><%= category.name %></li>
+        <div class="actions">
+          <button type="button" id="edit-button">Edit</button>
+          <form action="/category/<%= category.id %>/delete" method="post">
+            <button type="submit" id="delete-button">Delete</button>
+          </form>
+        </div>
         <% }); %>
       </ul>
     </section>

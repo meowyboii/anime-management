@@ -1,4 +1,8 @@
-const { fetchAllCategories, createCategory } = require("../db/categoryQueries");
+const {
+  fetchAllCategories,
+  createCategory,
+  deleteCategoryById,
+} = require("../db/categoryQueries");
 
 const getAllCategories = async (req, res) => {
   try {
@@ -28,14 +32,20 @@ const addCategoryPost = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-
-  res.send("Add New Category");
 };
 const updateCategory = (req, res) => {
   res.send("Update Category");
 };
-const deleteCategory = (req, res) => {
-  res.send("Delete Category");
+const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedCategory = await deleteCategoryById(id);
+    if (deletedCategory) {
+      res.redirect("/category");
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = {

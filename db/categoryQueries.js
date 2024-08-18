@@ -23,4 +23,18 @@ const createCategory = async (name) => {
   }
 };
 
-module.exports = { fetchAllCategories, createCategory };
+const deleteCategoryById = async (categoryId) => {
+  try {
+    const { rows } = await pool.query(
+      `DELETE FROM categories
+      WHERE id = $1
+      RETURNING *;`,
+      [categoryId]
+    );
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { fetchAllCategories, createCategory, deleteCategoryById };
